@@ -1,0 +1,24 @@
+{
+  "name": "webitv2-server",
+  "version": "1.0.0",
+  "description": "no file",
+  "main": "index.js",
+  "scripts": {
+    "start": "coffee -c pulic/js/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marutaru/webitv2-server.git"
+  },
+  "dependencies":{
+    "express":"*",
+    "socket.io":"*",
+    "jade":"*"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marutaru/webitv2-server/issues"
+  },
+  "homepage": "https://github.com/marutaru/webitv2-server"
+}
