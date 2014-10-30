@@ -36,7 +36,6 @@ io.sockets.on "connection",(socket) ->
     console.log note
     MongoClient.connect url,(err,db) ->
       return console.log err if err
-      console.log "connected mongodb #{db.databaseName}"
       db.createCollection "notes",(err,collection)->
         return console.log err if err
         collection.insert note,(err,inserted)->
@@ -48,12 +47,21 @@ io.sockets.on "connection",(socket) ->
   socket.on "find notes",(uri) ->
     MongoClient.connect url,(err,db)->
       return console.log err if err
-      console.log "connected mongodb #{db.databaseName}"
       db.createCollection "notes",(err,collection)->
         return console.log err if err
         collection.find("uri":uri).toArray (err,notes)->
           return console.log err if err
           socket.emit "send notes",notes
+          db.close()
+
+  socket.on "find recent",(hoge)->
+    MongoClient.connect url,(err,db)->
+      return console.log err if err
+      db.createCollection "notes",(err,collection)->
+        return console.log err if err
+        collection.find().toArray (err,pages)->
+          return console.log err if err
+          socket.emit "send recent",pages
           db.close()
 
 
