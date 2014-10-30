@@ -6,6 +6,7 @@ express = require 'express'
 app = express()
 path = require 'path'
 io = require 'socket.io'
+MongoClient = require('mongodb').MongoClient
 
 
 app.set "views",__dirname+"/views"
@@ -19,16 +20,30 @@ app.get "/",(req,res) ->
   res.render "index",
     "name":app.get "name"
 
-
-
+# mongodb
+url = 'mongodb://localhost:27017/webitv2'
 
 # listen
 server = app.listen 3000, ->
   console.log "listening on port 3000"
 
+# socket.io
 io = io.listen server
 io.sockets.on "connection",(socket) ->
-  console.log "connected"
+  console.log "socket.io connected"
+
+  socket.on "send note",(note) ->
+    console.log note
+    MongoClient.connect url,(err,db) ->
+      console.log "mongo"
+      return console.log err if err
+      console.log "connected mongodb #{db.databaseName}"
+      db.createCollection "notes",(err,collection)->
+        collection.insert note,(err,inserted)->
+          return console.log err if err
+          console.log inserted
+          db.close()
+        return console.log err if err
 
   socket.on "disconnect",() ->
-    console.log "disconnected"
+    console.log "socket.io disconnected"
