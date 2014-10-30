@@ -35,15 +35,27 @@ io.sockets.on "connection",(socket) ->
   socket.on "send note",(note) ->
     console.log note
     MongoClient.connect url,(err,db) ->
-      console.log "mongo"
       return console.log err if err
       console.log "connected mongodb #{db.databaseName}"
       db.createCollection "notes",(err,collection)->
+        return console.log err if err
         collection.insert note,(err,inserted)->
           return console.log err if err
           console.log inserted
           db.close()
         return console.log err if err
+
+  socket.on "find notes",(uri) ->
+    MongoClient.connect url,(err,db)->
+      return console.log err if err
+      console.log "connected mongodb #{db.databaseName}"
+      db.createCollection "notes",(err,collection)->
+        return console.log err if err
+        collection.find("uri":uri).toArray (err,notes)->
+          return console.log err if err
+          socket.emit "send notes",notes
+          db.close()
+
 
   socket.on "disconnect",() ->
     console.log "socket.io disconnected"
