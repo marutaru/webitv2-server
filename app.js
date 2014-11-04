@@ -89,7 +89,9 @@
           if (err) {
             return console.log(err);
           }
-          return collection.find().limit(20).toArray(function(err, pages) {
+          return collection.find().sort({
+            time: -1
+          }).limit(20).toArray(function(err, pages) {
             if (err) {
               return console.log(err);
             }
