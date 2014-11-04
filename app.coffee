@@ -59,7 +59,7 @@ io.sockets.on "connection",(socket) ->
       return console.log err if err
       db.createCollection "notes",(err,collection)->
         return console.log err if err
-        collection.find().toArray (err,pages)->
+        collection.find().limit(20).toArray (err,pages)->
           return console.log err if err
           socket.emit "send recent",pages
           db.close()
